@@ -93,6 +93,29 @@ export function ProductExplorer({ products }: { products: Product[] }) {
     setIsModalLoading(false);
   }
 
+  function trackProductClick(product: Product) {
+    const payload = JSON.stringify({
+      type: "product_click",
+      productId: product.id,
+      productName: product.name,
+      targetUrl: product.affiliateUrl,
+      path: window.location.pathname + window.location.search,
+      referrer: document.referrer || null,
+    });
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/analytics", new Blob([payload], { type: "application/json" }));
+      return;
+    }
+
+    fetch("/api/analytics", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+      keepalive: true,
+    }).catch(() => undefined);
+  }
+
   return (
     <section className="space-y-4">
       <div className="neo-panel bg-white p-2.5 md:p-3">
@@ -276,6 +299,7 @@ export function ProductExplorer({ products }: { products: Product[] }) {
                   <a
                     className="neo-button mt-auto bg-black px-4 py-3 text-sm text-white"
                     href={selectedProduct.affiliateUrl}
+                    onClick={() => trackProductClick(selectedProduct)}
                     target="_blank"
                     rel="noreferrer sponsored noopener"
                   >
@@ -290,6 +314,7 @@ export function ProductExplorer({ products }: { products: Product[] }) {
     </section>
   );
 }
+
 
 
 

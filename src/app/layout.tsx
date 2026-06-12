@@ -1,5 +1,6 @@
 ﻿import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AnalyticsTracker } from "@/components/analytics-tracker";
 import { BackToTopButton } from "@/components/back-to-top-button";
 import { ServiceWorkerRegister } from "@/components/service-worker-register";
 import "./globals.css";
@@ -104,10 +105,12 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         {children}
+        <AnalyticsTracker />
         <BackToTopButton />
         <ServiceWorkerRegister />
       </body>
     </html>
   );
 }
+
 

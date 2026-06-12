@@ -1,18 +1,19 @@
-﻿import { FolderPlus, PlusCircle, ShieldCheck } from "lucide-react";
+﻿import { ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { isAdminAuthenticated } from "@/lib/auth";
-import { CategoryCombobox } from "@/components/category-combobox";
-import { deleteCategoryAction, deleteProductAction, loginAction, saveCategoryAction, saveProductAction } from "./actions";
+import { AdminModals } from "@/components/admin-modals";
+import { ConfirmDeleteButton } from "@/components/confirm-delete-button";
+import { deleteCategoryAction, deleteProductAction, loginAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 type SearchParams = Promise<{ error?: string; edit?: string }>;
 
-function Field({ label, name, defaultValue, type = "text", required = false, list }: { label: string; name: string; defaultValue?: string | number | null; type?: string; required?: boolean; list?: string }) {
+function Field({ label, name, defaultValue, type = "text", required = false }: { label: string; name: string; defaultValue?: string | number | null; type?: string; required?: boolean }) {
   return (
     <label className="block space-y-2 font-black">
       <span>{label}</span>
-      <input name={name} type={type} defaultValue={defaultValue ?? ""} required={required} list={list} className="neo-input w-full px-4 py-3 font-bold" />
+      <input name={name} type={type} defaultValue={defaultValue ?? ""} required={required} className="neo-input w-full px-4 py-3 font-bold" />
     </label>
   );
 }
@@ -44,6 +45,16 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
   const products = prisma ? await prisma.product.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }] }) : [];
   const categories = prisma ? await prisma.category.findMany({ orderBy: [{ sortOrder: "asc" }, { name: "asc" }] }) : [];
   const editingProduct = products.find((product) => product.id === params.edit);
+  const hasAnalyticsModels = Boolean(prisma?.visit && prisma?.productClick);
+  const [visitCount, clickCount, uniqueVisitors, recentVisits, topClicks] = hasAnalyticsModels && prisma
+    ? await Promise.all([
+        prisma.visit.count(),
+        prisma.productClick.count(),
+        prisma.visit.groupBy({ by: ["ipAddress"], where: { ipAddress: { not: null } } }),
+        prisma.visit.findMany({ orderBy: { createdAt: "desc" }, take: 3 }),
+        prisma.productClick.groupBy({ by: ["productId", "productName"], _count: { productId: true }, orderBy: { _count: { productId: "desc" } }, take: 3 }),
+      ])
+    : [0, 0, [], [], []];
 
   return (
     <main className="min-h-screen bg-cream px-4 py-6 text-black md:px-8">
@@ -57,59 +68,63 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
             <Link href="/" className="neo-button bg-white px-5 py-3">Lihat Website</Link>
             <a href="/admin/logout" className="neo-button bg-black px-5 py-3 text-white">Logout</a>
           </div>
-        </div><div className="grid gap-8 lg:grid-cols-[420px_1fr]">
-          <div className="space-y-6">
-            <form action={saveProductAction} className="neo-panel space-y-5 bg-white p-6">
-              <div className="flex items-center gap-3">
-                <PlusCircle className="size-7" />
-                <h2 className="text-2xl font-black">{editingProduct ? "Edit Produk" : "Tambah Produk"}</h2>
-              </div>
-              <input type="hidden" name="id" value={editingProduct?.id ?? ""} />
-              <Field label="Nama Produk" name="name" defaultValue={editingProduct?.name} required />
-              <CategoryCombobox categories={categories} defaultValue={editingProduct?.category} />
-              <Field label="Harga/Teks Harga" name="price" defaultValue={editingProduct?.price} />
-              <label className="block space-y-2 font-black">
-                <span>Deskripsi</span>
-                <textarea name="description" defaultValue={editingProduct?.description ?? ""} className="neo-input min-h-28 w-full px-4 py-3 font-bold" />
-              </label>
-              <Field label="URL Foto" name="imageUrl" defaultValue={editingProduct?.imageUrl} type="url" required />
-              <Field label="Link Shopee Affiliate" name="affiliateUrl" defaultValue={editingProduct?.affiliateUrl} type="url" required />
-              <Field label="Urutan" name="sortOrder" defaultValue={editingProduct?.sortOrder ?? 0} type="number" />
-              <div className="grid gap-3 sm:grid-cols-2">
-                <label className="neo-input justify-start bg-lime px-4 py-3"><input name="isFeatured" type="checkbox" defaultChecked={editingProduct?.isFeatured ?? false} /> Unggulan</label>
-                <label className="neo-input justify-start bg-sky px-4 py-3"><input name="isActive" type="checkbox" defaultChecked={editingProduct?.isActive ?? true} /> Aktif</label>
-              </div>
-              <button className="neo-button w-full bg-orange px-5 py-4" type="submit">Simpan Produk</button>
-              {editingProduct ? <a href="/admin" className="block text-center font-black underline">Batal edit</a> : null}
-            </form>
+        </div>
 
-            <div className="neo-panel space-y-4 bg-white p-6">
-              <div className="flex items-center gap-3">
-                <FolderPlus className="size-7" />
-                <h2 className="text-2xl font-black">Kategori</h2>
-              </div>
-              <p className="text-sm font-bold text-zinc-700">Kelola daftar kategori untuk dropdown dan filter produk.</p>
-              <form action={saveCategoryAction} className="space-y-3">
-                <input name="categoryName" placeholder="Contoh: Gadget Murah" className="neo-input w-full px-4 py-3 font-bold" required />
-                <div className="grid grid-cols-[1fr_auto] gap-3">
-                  <input name="categorySortOrder" type="number" placeholder="Urutan" className="neo-input min-w-0 px-4 py-3 font-bold" />
-                  <button className="neo-button bg-yellow px-4 py-3" type="submit">Tambah</button>
+        <AdminModals categories={categories} editingProduct={editingProduct} />
+
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="neo-panel bg-white p-5">
+            <p className="text-xs font-black uppercase text-zinc-600">Total Kunjungan</p>
+            <p className="mt-2 text-4xl font-black">{visitCount}</p>
+          </div>
+          <div className="neo-panel bg-lime p-5">
+            <p className="text-xs font-black uppercase text-zinc-700">Unique IP</p>
+            <p className="mt-2 text-4xl font-black">{uniqueVisitors.length}</p>
+          </div>
+          <div className="neo-panel bg-sky p-5">
+            <p className="text-xs font-black uppercase text-zinc-700">Klik Produk</p>
+            <p className="mt-2 text-4xl font-black">{clickCount}</p>
+          </div>
+        </div>
+
+        <div className="grid gap-6 lg:grid-cols-2">
+          <div className="neo-panel bg-white p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-2xl font-black">Produk Paling Sering Diklik</h2>
+              <Link href="/admin/analytics" className="neo-button bg-yellow px-3 py-2 text-sm">Lihat selengkapnya</Link>
+            </div>
+            <div className="mt-4 space-y-3">
+              {topClicks.length ? topClicks.map((item) => (
+                <div key={`${item.productId}-${item.productName}`} className="flex items-center justify-between gap-3 rounded-xl border-2 border-black bg-yellow px-3 py-2 font-black shadow-neo-sm">
+                  <span className="line-clamp-1">{item.productName}</span>
+                  <span>{item._count.productId} klik</span>
                 </div>
-              </form>
-              <div className="grid gap-2">
-                {categories.map((category) => (
-                  <div key={category.id} className="flex items-center justify-between gap-3 rounded-xl border-2 border-black bg-pink px-3 py-2 text-sm font-black shadow-neo-sm">
-                    <span>{category.name}</span>
-                    <form action={deleteCategoryAction}>
-                      <input type="hidden" name="id" value={category.id} />
-                      <button type="submit" className="neo-button bg-white px-2 py-1 text-xs">Hapus</button>
-                    </form>
-                  </div>
-                ))}
-              </div>
+              )) : <p className="font-bold text-zinc-600">Belum ada klik produk.</p>}
             </div>
           </div>
 
+          <div className="neo-panel bg-white p-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="text-2xl font-black">Pengunjung Terbaru</h2>
+              <Link href="/admin/analytics" className="neo-button bg-yellow px-3 py-2 text-sm">Lihat selengkapnya</Link>
+            </div>
+            <div className="mt-4 space-y-3">
+              {recentVisits.length ? recentVisits.map((visit) => (
+                <div key={visit.id} className="rounded-xl border-2 border-black bg-cream p-3 text-xs font-bold shadow-neo-sm">
+                  <div className="flex flex-wrap justify-between gap-2 font-black">
+                    <span>{visit.ipAddress || "IP tidak tersedia"}</span>
+                    <span>{visit.createdAt.toLocaleString("id-ID")}</span>
+                  </div>
+                  <p className="mt-1">{visit.device || "Unknown"} - {visit.browser || "Unknown"} - {visit.os || "Unknown"}</p>
+                  <p className="mt-1">Path: {visit.path}</p>
+                  <p className="mt-1">Lokasi: {[visit.city, visit.country].filter(Boolean).join(", ") || "Tidak tersedia"}</p>
+                </div>
+              )) : <p className="font-bold text-zinc-600">Belum ada data kunjungan.</p>}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-[1fr_300px]">
           <div className="space-y-4">
             {products.map((product) => (
               <article key={product.id} className="neo-card flex flex-col gap-4 bg-white p-4 md:flex-row md:items-center">
@@ -127,10 +142,23 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
                   <a href={`/admin?edit=${product.id}`} className="neo-button bg-yellow px-4 py-3">Edit</a>
                   <form action={deleteProductAction}>
                     <input type="hidden" name="id" value={product.id} />
-                    <button className="neo-button bg-pink px-4 py-3" type="submit">Hapus</button>
+                    <ConfirmDeleteButton message={`Yakin hapus produk "${product.name}"?`} />
                   </form>
                 </div>
               </article>
+            ))}
+          </div>
+
+          <div className="neo-panel h-fit space-y-3 bg-white p-5">
+            <h2 className="text-2xl font-black">Kategori</h2>
+            {categories.map((category) => (
+              <div key={category.id} className="flex items-center justify-between gap-3 rounded-xl border-2 border-black bg-pink px-3 py-2 text-sm font-black shadow-neo-sm">
+                <span>{category.name}</span>
+                <form action={deleteCategoryAction}>
+                  <input type="hidden" name="id" value={category.id} />
+                  <ConfirmDeleteButton label="Hapus" message={`Yakin hapus kategori "${category.name}"? Produk lama tidak ikut terhapus, tapi filter kategorinya bisa terdampak.`} />
+                </form>
+              </div>
             ))}
           </div>
         </div>
@@ -138,11 +166,5 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
     </main>
   );
 }
-
-
-
-
-
-
 
 

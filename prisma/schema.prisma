@@ -31,3 +31,42 @@ model Product {
   @@index([category])
   @@index([isActive, sortOrder])
 }
+
+model Visit {
+  id        String   @id @default(cuid())
+  path      String
+  referrer  String?
+  ipAddress String?
+  userAgent String?
+  device    String?
+  browser   String?
+  os        String?
+  country   String?
+  city      String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([path])
+  @@index([ipAddress])
+}
+
+model ProductClick {
+  id          String   @id @default(cuid())
+  productId   String
+  productName String
+  targetUrl   String
+  path        String?
+  referrer    String?
+  ipAddress   String?
+  userAgent   String?
+  device      String?
+  browser     String?
+  os          String?
+  country     String?
+  city        String?
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([productId])
+  @@index([ipAddress])
+}
