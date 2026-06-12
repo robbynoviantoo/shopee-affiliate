@@ -1,0 +1,34 @@
+﻿{
+  "name": "Berlianna's - Shopee Affiliate Finds",
+  "short_name": "Berlianna's",
+  "description": "Katalog link Shopee affiliate pilihan Berlianna's dengan filter kategori dan produk hot.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fff7d6",
+  "theme_color": "#ffd93d",
+  "categories": ["shopping", "lifestyle"],
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Buka Katalog",
+      "short_name": "Katalog",
+      "url": "/",
+      "description": "Lihat produk affiliate pilihan Berlianna's"
+    },
+    {
+      "name": "Admin",
+      "short_name": "Admin",
+      "url": "/admin",
+      "description": "Kelola produk affiliate"
+    }
+  ]
+}

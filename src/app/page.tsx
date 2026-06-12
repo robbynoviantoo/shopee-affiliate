@@ -1,4 +1,4 @@
-import { ProductExplorer } from "@/components/product-explorer";
+﻿import { ProductExplorer } from "@/components/product-explorer";
 
 export const dynamic = "force-dynamic";
 
@@ -37,6 +37,20 @@ const fallbackProducts: PublicProduct[] = [
 ];
 
 export default async function Home() {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Berlianna's - Shopee Affiliate Finds",
+    url: siteUrl,
+    description: "Katalog rekomendasi produk Shopee affiliate pilihan Berlianna's dengan filter kategori dan hot deals.",
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/?q={search_term_string}`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   let products: PublicProduct[] = fallbackProducts;
 
   try {
@@ -62,28 +76,38 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen bg-cream px-3 py-4 text-black md:px-5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <section className="mx-auto flex max-w-7xl flex-col gap-4">
-        <header className="neo-panel relative overflow-hidden bg-yellow px-5 py-4 md:px-6 md:py-5">
+        <header className="neo-panel relative mb-5 overflow-hidden bg-yellow px-5 py-4 md:px-6 md:py-5">
           <div className="absolute -right-7 -top-7 size-20 rounded-full border-3 border-black bg-pink" />
           <div className="absolute bottom-4 right-5 hidden rotate-6 rounded-lg border-3 border-black bg-sky px-3 py-1.5 text-sm font-black shadow-neo-sm md:block">
-            Shopee Finds
+            Berlianna&apos;s Picks
           </div>
-          <div className="relative max-w-xl space-y-2">
-            <p className="inline-flex rounded-full border-2 border-black bg-white px-3 py-1 text-[10px] font-black uppercase shadow-neo-sm">
-              Produk affiliate pilihan
-            </p>
-            <h1 className="text-3xl font-black leading-none tracking-tight md:text-4xl lg:text-5xl">
-              Link Shopee favorit yang gampang dicari.
-            </h1>
-            <p className="max-w-lg text-sm font-bold md:text-base">
-              Cari produk berdasarkan nama, kategori, atau status unggulan.
-            </p>
+          <div className="relative max-w-3xl space-y-2">
+            <div className="space-y-2">
+              <p className="mb-5 inline-flex rounded-full border-2 border-black bg-white px-3 py-1 text-[10px] font-black uppercase shadow-neo-sm">
+                Berlianna&apos;s affiliate picks
+              </p>
+              <h1 className="mb-5 text-3xl font-black leading-none tracking-tight md:text-4xl lg:text-5xl">
+                Berlianna&apos;s - Shopee Affiliate Finds
+              </h1>
+              <p className="max-w-2xl text-sm font-bold md:text-base">
+                Katalog rekomendasi produk Shopee affiliate pilihan, lengkap dengan kategori, pencarian cepat, dan hot deals.
+              </p>
+            </div>
           </div>
         </header>
-
         <ProductExplorer products={products} />
       </section>
     </main>
   );
 }
+
+
+
+
+
 

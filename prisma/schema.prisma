@@ -6,19 +6,27 @@ datasource db {
   provider = "postgresql"
 }
 
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  price       String?
-  category    String
-  imageUrl    String
+  id           String   @id @default(cuid())
+  name         String
+  description  String?
+  price        String?
+  category     String
+  imageUrl     String
   affiliateUrl String
-  isFeatured  Boolean  @default(false)
-  isActive    Boolean  @default(true)
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isFeatured   Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([category])
   @@index([isActive, sortOrder])

@@ -1,0 +1,16 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 260" role="img" aria-labelledby="title desc">
+  <title id="title">Berlianna's - Shopee Affiliate Finds</title>
+  <desc id="desc">Logo neobrutalism untuk katalog Shopee affiliate Berlianna's.</desc>
+  <rect x="10" y="10" width="880" height="240" rx="42" fill="#ffd93d" stroke="#111" stroke-width="14"/>
+  <circle cx="805" cy="58" r="48" fill="#ff7eb6" stroke="#111" stroke-width="10"/>
+  <g transform="translate(58 54)">
+    <rect x="0" y="38" width="138" height="110" rx="24" fill="#fff7d6" stroke="#111" stroke-width="10"/>
+    <path d="M38 39c0-27 19-45 44-45s44 18 44 45" fill="none" stroke="#111" stroke-width="10" stroke-linecap="round"/>
+    <rect x="27" y="75" width="84" height="22" rx="11" fill="#75e6ff" stroke="#111" stroke-width="7"/>
+    <rect x="27" y="111" width="60" height="20" rx="10" fill="#ff8a3d" stroke="#111" stroke-width="7"/>
+  </g>
+  <text x="235" y="102" fill="#111" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="900">Berlianna&apos;s</text>
+  <text x="235" y="158" fill="#111" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="900">Shopee Affiliate Finds</text>
+  <rect x="235" y="181" width="395" height="34" rx="17" fill="#75e6ff" stroke="#111" stroke-width="8"/>
+  <text x="260" y="205" fill="#111" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="900">Produk pilihan • kategori • hot deals</text>
+</svg>

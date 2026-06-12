@@ -51,3 +51,31 @@ Buka `http://localhost:3000` untuk katalog dan `http://localhost:3000/admin` unt
 - Di Vercel, tambahkan `DATABASE_URL`, `ADMIN_PASSWORD`, dan `SESSION_SECRET` pada Environment Variables.
 - Gunakan URL gambar publik dari layanan penyimpanan gambar agar produk bisa ditampilkan stabil.
 - Password admin saat development default ke `admin12345` jika `ADMIN_PASSWORD` belum diisi, tapi wajib ganti di production.
+
+## PWA
+
+Aplikasi sudah memiliki manifest dan service worker sederhana:
+
+- Manifest: `public/manifest.webmanifest`
+- Icon: `public/icons/icon.svg`
+- Service worker: `public/sw.js`
+- Registrasi service worker aktif hanya di production build.
+
+Untuk mengetes instalasi PWA secara lokal:
+
+```bash
+npm run build
+npm run start
+```
+
+Lalu buka browser dan cek menu install app / Lighthouse PWA. Route `/admin` sengaja tidak di-cache oleh service worker.
+
+## SEO
+
+Set `NEXT_PUBLIC_SITE_URL` di environment production agar canonical URL, sitemap, robots, Open Graph, dan structured data memakai domain asli.
+
+```env
+NEXT_PUBLIC_SITE_URL="https://domain-kamu.com"
+```
+
+Branding default: `Berlianna's - Shopee Affiliate Finds`. Logo tersedia di `public/logo.svg` dan icon PWA di `public/icons/icon.svg`.

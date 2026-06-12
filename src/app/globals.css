@@ -72,3 +72,197 @@ body {
 .neo-input:focus {
   box-shadow: 3px 3px 0 #111111;
 }
+
+.neo-modal {
+  border: 3px solid #111111;
+  border-radius: 18px;
+  box-shadow: 8px 8px 0 #111111;
+  animation: modal-pop 180ms ease-out;
+}
+
+@keyframes modal-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-flame {
+  animation: flame-flicker 850ms ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 5px #ff8a3d);
+  transform-origin: 50% 80%;
+}
+
+@keyframes flame-flicker {
+  0% {
+    transform: rotate(-6deg) scale(1);
+  }
+  45% {
+    transform: rotate(5deg) scale(1.18);
+  }
+  75% {
+    transform: rotate(-2deg) scale(1.08);
+  }
+  100% {
+    transform: rotate(7deg) scale(1.25);
+  }
+}
+
+.flame-wrap {
+  display: inline-flex;
+  height: 18px;
+  width: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.flame-svg {
+  height: 18px;
+  width: 18px;
+  overflow: visible;
+  transform-origin: 50% 80%;
+}
+
+.flame-outer,
+.flame-mid,
+.flame-inner {
+  stroke: #111111;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: 50% 80%;
+}
+
+.flame-outer {
+  fill: #ff4d00;
+}
+
+.flame-mid {
+  fill: #ffb000;
+}
+
+.flame-inner {
+  fill: #fff36d;
+}
+
+.flame-wrap.is-active .flame-svg {
+  animation: flame-sway 650ms ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 6px #ff8a00) drop-shadow(0 0 10px #ff4d00);
+}
+
+.flame-wrap.is-active .flame-outer {
+  animation: flame-outer 520ms ease-in-out infinite alternate;
+}
+
+.flame-wrap.is-active .flame-mid {
+  animation: flame-mid 430ms ease-in-out infinite alternate-reverse;
+}
+
+.flame-wrap.is-active .flame-inner {
+  animation: flame-inner 360ms ease-in-out infinite alternate;
+}
+
+@keyframes flame-sway {
+  from {
+    transform: rotate(-5deg) scale(1);
+  }
+  to {
+    transform: rotate(6deg) scale(1.12);
+  }
+}
+
+@keyframes flame-outer {
+  from {
+    transform: translateY(1px) scaleX(0.94) scaleY(1.02);
+  }
+  to {
+    transform: translateY(-2px) scaleX(1.08) scaleY(1.12);
+  }
+}
+
+@keyframes flame-mid {
+  from {
+    transform: translate(1px, 1px) scale(0.9);
+  }
+  to {
+    transform: translate(-1px, -2px) scale(1.08);
+  }
+}
+
+@keyframes flame-inner {
+  from {
+    transform: translateY(1px) scale(0.82);
+    opacity: 0.75;
+  }
+  to {
+    transform: translateY(-3px) scale(1.08);
+    opacity: 1;
+  }
+}
+
+.flame-wrap {
+  display: inline-flex;
+  height: 18px;
+  width: 18px;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 18px;
+}
+
+.flame-svg {
+  display: block;
+  height: 18px;
+  width: 18px;
+  overflow: visible;
+  transform-origin: 50% 80%;
+}
+
+.flame-outer,
+.flame-mid,
+.flame-inner {
+  stroke: #111111;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: 50% 80%;
+}
+
+.flame-outer {
+  fill: #ff4d00;
+}
+
+.flame-mid {
+  fill: #ffb000;
+}
+
+.flame-inner {
+  fill: #fff36d;
+}
+
+.flame-wrap.is-active .flame-svg {
+  animation: flame-sway 650ms ease-in-out infinite alternate;
+  filter: drop-shadow(0 0 5px #ff8a00);
+}
+
+.flame-wrap.is-idle .flame-svg {
+  animation: flame-sway 1200ms ease-in-out infinite alternate;
+}
+
+.flame-wrap.is-active .flame-outer,
+.flame-wrap.is-idle .flame-outer {
+  animation: flame-outer 520ms ease-in-out infinite alternate;
+}
+
+.flame-wrap.is-active .flame-mid,
+.flame-wrap.is-idle .flame-mid {
+  animation: flame-mid 430ms ease-in-out infinite alternate-reverse;
+}
+
+.flame-wrap.is-active .flame-inner,
+.flame-wrap.is-idle .flame-inner {
+  animation: flame-inner 360ms ease-in-out infinite alternate;
+}
