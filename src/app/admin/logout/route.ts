@@ -2,11 +2,7 @@
 
 const COOKIE_NAME = "affiliate_admin";
 
-export async function POST(request: Request) {
-  const response = NextResponse.redirect(new URL("/admin", request.url), {
-    status: 303,
-  });
-
+function clearAdminCookies(response: NextResponse) {
   const cookieOptions = {
     httpOnly: true,
     sameSite: "lax" as const,
@@ -17,6 +13,23 @@ export async function POST(request: Request) {
 
   response.cookies.set(COOKIE_NAME, "", { ...cookieOptions, path: "/" });
   response.cookies.set(COOKIE_NAME, "", { ...cookieOptions, path: "/admin" });
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
 
   return response;
+}
+
+export async function GET(request: Request) {
+  return clearAdminCookies(
+    NextResponse.redirect(new URL("/admin?logged_out=1", request.url), {
+      status: 303,
+    }),
+  );
+}
+
+export async function POST(request: Request) {
+  return clearAdminCookies(
+    NextResponse.redirect(new URL("/admin?logged_out=1", request.url), {
+      status: 303,
+    }),
+  );
 }

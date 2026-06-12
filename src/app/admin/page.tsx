@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { isAdminAuthenticated } from "@/lib/auth";
 import { CategoryCombobox } from "@/components/category-combobox";
-import { deleteCategoryAction, deleteProductAction, loginAction, logoutAction, saveCategoryAction, saveProductAction } from "./actions";
+import { deleteCategoryAction, deleteProductAction, loginAction, saveCategoryAction, saveProductAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
@@ -55,7 +55,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
           </div>
           <div className="flex gap-3">
             <Link href="/" className="neo-button bg-white px-5 py-3">Lihat Website</Link>
-            <form action={logoutAction}><button type="submit" className="neo-button bg-black px-5 py-3 text-white">Logout</button></form>
+            <a href="/admin/logout" className="neo-button bg-black px-5 py-3 text-white">Logout</a>
           </div>
         </div><div className="grid gap-8 lg:grid-cols-[420px_1fr]">
           <div className="space-y-6">
@@ -138,6 +138,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
     </main>
   );
 }
+
 
 
 
