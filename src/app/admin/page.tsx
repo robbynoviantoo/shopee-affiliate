@@ -10,7 +10,7 @@ type SearchParams = Promise<{ error?: string; edit?: string }>;
 
 function Field({ label, name, defaultValue, type = "text", required = false, list }: { label: string; name: string; defaultValue?: string | number | null; type?: string; required?: boolean; list?: string }) {
   return (
-    <label className="space-y-2 font-black">
+    <label className="block space-y-2 font-black">
       <span>{label}</span>
       <input name={name} type={type} defaultValue={defaultValue ?? ""} required={required} list={list} className="neo-input w-full px-4 py-3 font-bold" />
     </label>
@@ -31,7 +31,9 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
             <p className="font-bold text-zinc-700">Masukkan password admin untuk kelola link affiliate.</p>
           </div>
           {params.error ? <p className="rounded-xl border-3 border-black bg-pink p-3 font-black">{params.error}</p> : null}
-          <Field label="Password" name="password" type="password" required />
+          <div className="mb-5">
+            <Field label="Password" name="password" type="password" required />
+          </div>
           <button className="neo-button w-full bg-yellow px-5 py-4" type="submit">Masuk Dashboard</button>
         </form>
       </main>
@@ -53,7 +55,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
           </div>
           <div className="flex gap-3">
             <Link href="/" className="neo-button bg-white px-5 py-3">Lihat Website</Link>
-            <form action={logoutAction}><button className="neo-button bg-black px-5 py-3 text-white">Logout</button></form>
+            <form action={logoutAction}><button type="submit" className="neo-button bg-black px-5 py-3 text-white">Logout</button></form>
           </div>
         </div><div className="grid gap-8 lg:grid-cols-[420px_1fr]">
           <div className="space-y-6">
@@ -66,7 +68,7 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
               <Field label="Nama Produk" name="name" defaultValue={editingProduct?.name} required />
               <CategoryCombobox categories={categories} defaultValue={editingProduct?.category} />
               <Field label="Harga/Teks Harga" name="price" defaultValue={editingProduct?.price} />
-              <label className="space-y-2 font-black">
+              <label className="block space-y-2 font-black">
                 <span>Deskripsi</span>
                 <textarea name="description" defaultValue={editingProduct?.description ?? ""} className="neo-input min-h-28 w-full px-4 py-3 font-bold" />
               </label>
@@ -136,6 +138,10 @@ export default async function AdminPage({ searchParams }: { searchParams: Search
     </main>
   );
 }
+
+
+
+
 
 
 

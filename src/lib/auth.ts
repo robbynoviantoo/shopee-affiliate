@@ -1,4 +1,4 @@
-import { createHmac, timingSafeEqual } from "crypto";
+﻿import { createHmac, timingSafeEqual } from "crypto";
 import { cookies } from "next/headers";
 
 const COOKIE_NAME = "affiliate_admin";
@@ -27,14 +27,23 @@ export async function createAdminSession() {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
-    path: "/admin",
+    path: "/",
     maxAge: 60 * 60 * 8,
   });
 }
 
 export async function destroyAdminSession() {
   const cookieStore = await cookies();
-  cookieStore.delete(COOKIE_NAME);
+  const expiredCookie = {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 0,
+    expires: new Date(0),
+  };
+
+  cookieStore.set(COOKIE_NAME, "", { ...expiredCookie, path: "/admin" });
+  cookieStore.set(COOKIE_NAME, "", { ...expiredCookie, path: "/" });
 }
 
 export async function isAdminAuthenticated() {
@@ -47,3 +56,4 @@ export async function isAdminAuthenticated() {
   const signature = parts[2];
   return sign(value) === signature;
 }
+
