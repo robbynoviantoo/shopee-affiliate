@@ -75,7 +75,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-cream px-3 py-4 text-black md:px-5">
+    <main className="page-enter min-h-screen bg-cream px-3 py-4 text-black md:px-5">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -105,6 +105,7 @@ export default async function Home() {
     </main>
   );
 }
+
 
 
 

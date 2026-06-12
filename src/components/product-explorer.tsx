@@ -209,7 +209,7 @@ export function ProductExplorer({ products }: { products: Product[] }) {
         </p>
       </div>
 
-      <div className={clsx(layout === "grid" ? "grid gap-4 sm:grid-cols-2 lg:grid-cols-4" : "space-y-3")}>
+      <div className={clsx(layout === "grid" ? "stagger-children grid gap-4 sm:grid-cols-2 lg:grid-cols-4" : "stagger-children space-y-3")}>
         {filteredProducts.map((product) => (
           <article
             key={product.id}
@@ -314,6 +314,7 @@ export function ProductExplorer({ products }: { products: Product[] }) {
     </section>
   );
 }
+
 
 
 

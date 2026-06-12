@@ -24,7 +24,7 @@ export default async function AdminAnalyticsPage() {
     : [0, 0, [], [], [], []];
 
   return (
-    <main className="min-h-screen bg-cream px-4 py-6 text-black md:px-8">
+    <main className="page-enter min-h-screen bg-cream px-4 py-6 text-black md:px-8">
       <section className="mx-auto max-w-7xl space-y-8">
         <div className="neo-panel flex flex-col gap-4 bg-yellow p-6 md:flex-row md:items-center md:justify-between">
           <div className="flex items-center gap-3">
@@ -119,3 +119,4 @@ export default async function AdminAnalyticsPage() {
     </main>
   );
 }
+
