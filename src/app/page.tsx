@@ -1,65 +1,89 @@
-import Image from "next/image";
+import { ProductExplorer } from "@/components/product-explorer";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+type PublicProduct = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: string | null;
+  category: string;
+  imageUrl: string;
+  affiliateUrl: string;
+  isFeatured: boolean;
+};
+
+const fallbackProducts: PublicProduct[] = [
+  {
+    id: "demo-1",
+    name: "Mini Humidifier Pastel",
+    description: "Humidifier compact untuk meja kerja dan kamar kecil.",
+    price: "Rp59.000",
+    category: "Rumah",
+    imageUrl: "https://images.unsplash.com/photo-1632923057155-85ccca11f4b3?auto=format&fit=crop&w=900&q=80",
+    affiliateUrl: "https://shopee.co.id/",
+    isFeatured: true,
+  },
+  {
+    id: "demo-2",
+    name: "Desk Lamp LED Minimalis",
+    description: "Lampu belajar warm light untuk setup kerja.",
+    price: "Rp89.000",
+    category: "Elektronik",
+    imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=900&q=80",
+    affiliateUrl: "https://shopee.co.id/",
+    isFeatured: true,
+  },
+];
+
+export default async function Home() {
+  let products: PublicProduct[] = fallbackProducts;
+
+  try {
+    if (!process.env.DATABASE_URL) throw new Error("DATABASE_URL is not configured");
+    const { prisma } = await import("@/lib/prisma");
+    products = await prisma.product.findMany({
+      where: { isActive: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      select: {
+        id: true,
+        name: true,
+        description: true,
+        price: true,
+        category: true,
+        imageUrl: true,
+        affiliateUrl: true,
+        isFeatured: true,
+      },
+    });
+  } catch {
+    products = fallbackProducts;
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+    <main className="min-h-screen bg-cream px-3 py-4 text-black md:px-5">
+      <section className="mx-auto flex max-w-7xl flex-col gap-4">
+        <header className="neo-panel relative overflow-hidden bg-yellow px-5 py-4 md:px-6 md:py-5">
+          <div className="absolute -right-7 -top-7 size-20 rounded-full border-3 border-black bg-pink" />
+          <div className="absolute bottom-4 right-5 hidden rotate-6 rounded-lg border-3 border-black bg-sky px-3 py-1.5 text-sm font-black shadow-neo-sm md:block">
+            Shopee Finds
+          </div>
+          <div className="relative max-w-xl space-y-2">
+            <p className="inline-flex rounded-full border-2 border-black bg-white px-3 py-1 text-[10px] font-black uppercase shadow-neo-sm">
+              Produk affiliate pilihan
+            </p>
+            <h1 className="text-3xl font-black leading-none tracking-tight md:text-4xl lg:text-5xl">
+              Link Shopee favorit yang gampang dicari.
+            </h1>
+            <p className="max-w-lg text-sm font-bold md:text-base">
+              Cari produk berdasarkan nama, kategori, atau status unggulan.
+            </p>
+          </div>
+        </header>
+
+        <ProductExplorer products={products} />
+      </section>
+    </main>
   );
 }
+

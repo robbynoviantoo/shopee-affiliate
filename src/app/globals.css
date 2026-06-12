@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fff7d6;
+  --foreground: #111111;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-cream: #fff7d6;
+  --color-yellow: #ffd93d;
+  --color-orange: #ff8a3d;
+  --color-pink: #ff7eb6;
+  --color-sky: #75e6ff;
+  --color-lime: #c6ff4a;
+  --shadow-neo: 4px 4px 0 #111111;
+  --shadow-neo-sm: 2px 2px 0 #111111;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  box-sizing: border-box;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.neo-panel,
+.neo-card {
+  border: 3px solid #111111;
+  border-radius: 14px;
+  box-shadow: 4px 4px 0 #111111;
+}
+
+.neo-card {
+  overflow: hidden;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.neo-card:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 5px 5px 0 #111111;
+}
+
+.neo-button,
+.neo-input {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 2px solid #111111;
+  border-radius: 8px;
+  font-weight: 900;
+  box-shadow: 2px 2px 0 #111111;
+  outline: none;
+}
+
+.neo-button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #111111;
+}
+
+.neo-input {
+  background: #ffffff;
+}
+
+.neo-input:focus {
+  box-shadow: 3px 3px 0 #111111;
 }
